@@ -1,0 +1,6 @@
+.idea/*
+
+### Rust ###
+target/
+**/*.rs.bk
+*.pdb
