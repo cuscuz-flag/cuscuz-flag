@@ -1,5 +1,5 @@
 [package]
-name = "cuscuz-flag-server"
+name = "cuscuz-flag"
 version = "0.1.0"
 authors = ["Mário Idival <marioidival@gmail.com>"]
 edition = "2021"
