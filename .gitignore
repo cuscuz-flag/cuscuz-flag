@@ -1,6 +1,8 @@
 .idea/*
 .vscode/*
 
+*/dist/*
+
 ### Rust ###
 target/
 **/*.rs.bk
