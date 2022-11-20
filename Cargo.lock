@@ -3,5 +3,13 @@
 version = 3
 
 [[package]]
-name = "cuscuz-flag-server"
+name = "admin"
+version = "0.1.0"
+
+[[package]]
+name = "api"
+version = "0.1.0"
+
+[[package]]
+name = "dashboard"
 version = "0.1.0"
