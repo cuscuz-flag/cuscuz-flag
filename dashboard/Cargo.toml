@@ -8,3 +8,4 @@ authors.workspace = true
 
 [dependencies]
 yew = "0.19"
+yew-router = "0.16.0"

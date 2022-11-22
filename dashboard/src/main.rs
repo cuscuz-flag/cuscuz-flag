@@ -1,44 +1,69 @@
 use yew::prelude::*;
+use yew_router::prelude::*;
 
-enum Msg {
-    AddOne,
+#[derive(Clone, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
+    #[at("/sign-up")]
+    SignUp,
 }
 
-struct Model {
-    value: i64,
+#[function_component(SignUpForm)]
+fn signup() -> Html {
+    html! {
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <div class="field is-grouped is-grouped-centered">
+                    <p class="title is-2">{ "Sign Up" }</p>
+                </div>
+                <div class="field">
+                    <label class="label">{ "Email" }</label>
+                    <div class="control">
+                        <input class="input is-warning" type="email" />
+                    </div>
+                    <label class="label">{ "Password" }</label>
+                    <div class="control">
+                        <input class="input is-warning" type="password" />
+                    </div>
+                </div>
+                <div class="field is-grouped is-grouped-centered">
+                    <button class="button is-warning is-light" type="submit">{ "Get started" }</button>
+                </div>
+            </div>
+        </div>
+    }
 }
 
-impl Component for Model {
-    type Message = Msg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self { value: 0 }
-    }
-
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Msg::AddOne => {
-                self.value += 1;
-                true
-            }
-        }
-    }
-
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let link = ctx.link();
-
-        html! {
+fn switch(routes: &Route) -> Html {
+    match routes {
+        Route::Home => html! {
             <section class="section">
                 <div class="container">
-                    <button class="button" onclick={link.callback(|_| Msg::AddOne)}>{ "+1"}</button>
-                    <p>{ self.value }</p>
+                    <h1 class="title is-1"> { "Cuscuz Flag" } </h1>
+                    <Link<Route> to={Route::SignUp} classes="button is-primary">{ "Sign up page" }</Link<Route>>
                 </div>
             </section>
-        }
+        },
+        Route::SignUp => html! {
+            <section class="section">
+                <div class="container">
+                    <SignUpForm />
+                </div>
+            </section>
+        },
+    }
+}
+
+#[function_component(Main)]
+fn app() -> Html {
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={Switch::render(switch)} />
+        </BrowserRouter>
     }
 }
 
 fn main() {
-    yew::start_app::<Model>();
+    yew::start_app::<Main>();
 }
