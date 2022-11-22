@@ -38,29 +38,25 @@ fn signup() -> Html {
 fn switch(routes: &Route) -> Html {
     match routes {
         Route::Home => html! {
-            <section class="section">
-                <div class="container">
-                    <h1 class="title is-1"> { "Cuscuz Flag" } </h1>
-                    <Link<Route> to={Route::SignUp} classes="button is-primary">{ "Sign up page" }</Link<Route>>
-                </div>
-            </section>
+            <>
+                <h1 class="title is-1"> { "Cuscuz Flag" } </h1>
+                <Link<Route> to={Route::SignUp} classes="button is-primary">{ "Sign up page" }</Link<Route>>
+            </>
         },
-        Route::SignUp => html! {
-            <section class="section">
-                <div class="container">
-                    <SignUpForm />
-                </div>
-            </section>
-        },
+        Route::SignUp => html! { <SignUpForm /> },
     }
 }
 
 #[function_component(Main)]
 fn app() -> Html {
     html! {
-        <BrowserRouter>
-            <Switch<Route> render={Switch::render(switch)} />
-        </BrowserRouter>
+        <section class="section">
+            <div class="container">
+                <BrowserRouter>
+                    <Switch<Route> render={Switch::render(switch)} />
+                </BrowserRouter>
+            </div>
+        </section>
     }
 }
 
