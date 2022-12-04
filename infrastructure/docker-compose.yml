@@ -1,0 +1,21 @@
+services:
+  core_db:
+    image: postgres:15-alpine
+    hostname: coredb
+    environment:
+      - PGPORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./scripts/sql:/docker-entrypoint-initdb.d:ro
+      # - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pgdata:
