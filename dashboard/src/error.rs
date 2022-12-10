@@ -9,20 +9,26 @@ pub struct ErrorInfo {
 
 #[derive(ThError, Clone, Debug, PartialEq, Eq)]
 pub enum Error {
+    #[error("bad request: {0:?}")]
+    BadRequest(ErrorInfo),
+
     #[error("unauthorized")]
-    Unauthorized,
+    Unauthorized(ErrorInfo),
 
     #[error("forbidden")]
-    Forbidden,
+    Forbidden(ErrorInfo),
 
     #[error("not found")]
-    NotFound,
+    NotFound(ErrorInfo),
+
+    #[error("conflict")]
+    Conflict(ErrorInfo),
 
     #[error("unprocessable entity: {0:?}")]
     UnprocessableEntity(ErrorInfo),
 
     #[error("internal server error")]
-    InternalServerError,
+    InternalServerError(ErrorInfo),
 
     #[error("deserialize error")]
     DeserializeError,

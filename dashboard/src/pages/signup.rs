@@ -3,6 +3,7 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
+use crate::components::list_errors::ListErrors;
 use crate::hooks::use_user_context;
 use crate::services::auth::signup;
 use crate::types::SignUpForm;
@@ -65,6 +66,9 @@ pub fn signup_page() -> Html {
                     <div class="field is-grouped is-grouped-centered">
                         <p class="title is-2">{ "Sign Up" }</p>
                     </div>
+
+                    <ListErrors error={user_signup.error.clone() } />
+
                     <div class="field">
                         <label class="label">{ "Email" }</label>
                         <div class="control">

@@ -64,20 +64,21 @@ where
                 Err(Error::DeserializeError)
             }
         } else {
-            match data.status().as_u16() {
-                401 => Err(Error::Unauthorized),
-                403 => Err(Error::Forbidden),
-                404 => Err(Error::NotFound),
-                500 => Err(Error::InternalServerError),
-                422 => {
-                    let data: Result<ErrorInfo, _> = data.json::<ErrorInfo>().await;
-                    if let Ok(data) = data {
-                        Err(Error::UnprocessableEntity(data))
+            let status_response = data.status().clone().as_u16();
+            let inner_data: Result<ErrorInfo, _> = data.json::<ErrorInfo>().await;
+            if let Ok(error_info) = inner_data {
+                match status_response {
+                    400 => Err(Error::BadRequest(error_info)),
+                    401 => Err(Error::Unauthorized(error_info)),
+                    403 => Err(Error::Forbidden(error_info)),
+                    404 => Err(Error::NotFound(error_info)),
+                    409 => Err(Error::Conflict(error_info)),
+                    500 => Err(Error::InternalServerError(error_info)),
+                    422 => Err(Error::UnprocessableEntity(error_info)),
+                    _ => Err(Error::RequestError),
+                }
                     } else {
                         Err(Error::DeserializeError)
-                    }
-                }
-                _ => Err(Error::RequestError),
             }
         }
     } else {
