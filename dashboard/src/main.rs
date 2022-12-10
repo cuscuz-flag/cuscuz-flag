@@ -2,9 +2,14 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 mod components;
+mod error;
+mod hooks;
 mod pages;
+mod services;
+mod types;
 
-use pages::signup::SignUpForm;
+use components::user_context_provider::UserContextProvider;
+use pages::signup::Register;
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
@@ -14,7 +19,10 @@ enum Route {
     SignUp,
 }
 
-fn switch(routes: &Route) -> Html {
+/// https://github.com/jetli/rust-yew-realworld-example-app/tree/master/crates/conduit-wasm/src/routes
+/// https://github.com/jetli/rust-yew-realworld-example-app/blob/master/crates/conduit-wasm/src/types/auth.rs
+
+fn switch(routes: Route) -> Html {
     match routes {
         Route::Home => html! {
             <>
@@ -22,17 +30,19 @@ fn switch(routes: &Route) -> Html {
                 <Link<Route> to={Route::SignUp} classes="button is-primary">{ "Sign up page" }</Link<Route>>
             </>
         },
-        Route::SignUp => html! { <SignUpForm /> },
+        Route::SignUp => html! { <Register /> },
     }
 }
 
-#[function_component(Main)]
-fn app() -> Html {
+#[function_component]
+fn App() -> Html {
     html! {
         <section class="section">
             <div class="container">
                 <BrowserRouter>
-                    <Switch<Route> render={Switch::render(switch)} />
+                    <UserContextProvider>
+                        <Switch<Route> render={switch} />
+                    </UserContextProvider>
                 </BrowserRouter>
             </div>
         </section>
@@ -40,5 +50,5 @@ fn app() -> Html {
 }
 
 fn main() {
-    yew::start_app::<Main>();
+    yew::Renderer::<App>::new().render();
 }

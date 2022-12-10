@@ -1,66 +1,85 @@
+use web_sys::HtmlInputElement;
+
 use yew::prelude::*;
+use yew_hooks::prelude::*;
 
-use crate::components::email_input::EmailInput;
-use crate::components::password_input::PasswordInput;
+use crate::hooks::use_user_context;
+use crate::services::auth::signup;
+use crate::types::SignUpForm;
 
-pub enum SignUpMsg {
-    SetEmail(String),
-    SetPassword(String),
-    Submit,
-}
+#[function_component(Register)]
+pub fn signup_page() -> Html {
+    let user_ctx = use_user_context();
+    // Create initial state
+    let signup_info = use_state(SignUpForm::default);
 
-#[derive(Debug, Default)]
-pub struct SignUpForm {
-    pub email: String,
-    pub password: String,
-}
+    let user_signup = {
+        let signup_info = signup_info.clone();
+        use_async(async move { signup((*signup_info).clone()).await })
+    };
 
-impl Component for SignUpForm {
-    type Message = SignUpMsg;
-    type Properties = ();
-
-    fn create(_ctx: &Context<Self>) -> Self {
-        Self::default()
+    {
+        use_effect_with_deps(
+            move |user_signup| {
+                if let Some(user_info) = &user_signup.data {
+                    user_ctx.login(user_info.user.clone())
+                }
+                || ()
+            },
+            user_signup.clone(),
+        );
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
-        match msg {
-            Self::Message::SetEmail(new_email_value) => self.email = new_email_value,
-            Self::Message::SetPassword(new_password_value) => self.password = new_password_value,
-            Self::Message::Submit => {
-                // Let's send email + password to backend
-                unimplemented!()
-            }
-        };
-        true
-    }
+    let onsubmit = {
+        let user_signup = user_signup.clone();
+        Callback::from(move |e: SubmitEvent| {
+            e.prevent_default();
+            user_signup.run();
+        })
+    };
 
-    fn view(&self, ctx: &Context<Self>) -> Html {
-        let on_change_email = ctx.link().callback(SignUpMsg::SetEmail);
-        let on_change_password = ctx.link().callback(SignUpMsg::SetPassword);
-        let onclick = ctx.link().callback(|_| SignUpMsg::Submit);
+    let oninput_email = {
+        let signup_info = signup_info.clone();
+        Callback::from(move |e: InputEvent| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            let mut info = (*signup_info).clone();
+            info.email = input.value();
+            signup_info.set(info);
+        })
+    };
 
-        html! {
-            <div class="columns">
-                <div class="column is-half is-offset-one-quarter">
+    let oninput_password = {
+        let signup_info = signup_info.clone();
+        Callback::from(move |e: InputEvent| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            let mut info = (*signup_info).clone();
+            info.password = input.value();
+            signup_info.set(info);
+        })
+    };
+
+    html! {
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <form {onsubmit}>
                     <div class="field is-grouped is-grouped-centered">
                         <p class="title is-2">{ "Sign Up" }</p>
                     </div>
                     <div class="field">
                         <label class="label">{ "Email" }</label>
                         <div class="control">
-                            <EmailInput on_change={on_change_email} value={self.email.clone()} />
+                            <input oninput={oninput_email} value={signup_info.email.clone()} class="input is-warning" type="email"  />
                         </div>
                         <label class="label">{ "Password" }</label>
                         <div class="control">
-                            <PasswordInput on_change={on_change_password} value={self.password.clone()} />
+                            <input oninput={oninput_password} value={signup_info.password.clone()} class="input is-warning" type="password"  />
                         </div>
                     </div>
                     <div class="field is-grouped is-grouped-centered">
-                        <button {onclick} class="button is-warning is-light" type="submit">{ "Get started" }</button>
+                        <button class="button is-warning is-light" type="submit">{ "Get started" }</button>
                     </div>
-                </div>
+                </form>
             </div>
-        }
+        </div>
     }
 }

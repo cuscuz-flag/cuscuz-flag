@@ -17,6 +17,7 @@ use serde_json::json;
 use sqlx::{postgres::PgPoolOptions, PgPool, Pool, Postgres};
 use thiserror::Error;
 use tokio::{signal, task};
+use tower_http::cors::{Any, CorsLayer};
 use validator::{Validate, ValidationError};
 
 #[tokio::main]
@@ -44,6 +45,12 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
         .route("/ping", get(|| async { "pong" }))
+        .layer(
+            CorsLayer::new()
+                .allow_origin(Any)
+                .allow_headers(Any)
+                .allow_methods(Any),
+        )
         .with_state(pool))
 }
 
@@ -229,66 +236,4 @@ async fn shutdown_signal() {
     }
 
     println!("signal received, starting graceful shutdown")
-}
-
-// TODO: move to own package
-#[cfg(test)]
-mod test {
-    use super::*;
-    use axum::{
-        body::Body,
-        http::{self, Request},
-    };
-    use tower::Service;
-    use tower::ServiceExt;
-
-    #[tokio::test]
-    async fn signup_with_wrong_email_format() {
-        let app = app().await.unwrap();
-
-        let response = app
-            .oneshot(
-                Request::builder()
-                    .method(http::Method::POST)
-                    .header(http::header::CONTENT_TYPE, "application/json")
-                    .uri("/sign-up")
-                    .body(Body::from(
-                        serde_json::to_string(&SignFormRequest {
-                            email: "bad".to_string(),
-                            password: "axumyewpostgresqlpassword".to_string(),
-                        })
-                        .unwrap(),
-                    ))
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
-    }
-
-    #[tokio::test]
-    async fn signup_with_weak_password() {
-        let app = app().await.unwrap();
-
-        let response = app
-            .oneshot(
-                Request::builder()
-                    .method(http::Method::POST)
-                    .header(http::header::CONTENT_TYPE, "application/json")
-                    .uri("/sign-up")
-                    .body(Body::from(
-                        serde_json::to_string(&SignFormRequest {
-                            email: "good@email.com".to_string(),
-                            password: "python".to_string(),
-                        })
-                        .unwrap(),
-                    ))
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
-    }
 }
