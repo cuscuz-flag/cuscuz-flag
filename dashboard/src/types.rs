@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct UserInfo {
     pub email: String,
     pub token: String,
+    pub onboarded: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
