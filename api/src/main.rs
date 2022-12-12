@@ -10,6 +10,7 @@ use tokio::signal;
 use tower_http::cors::{Any, CorsLayer};
 
 mod error;
+mod extractors;
 mod handlers;
 
 pub use handlers::{signin, signup};
