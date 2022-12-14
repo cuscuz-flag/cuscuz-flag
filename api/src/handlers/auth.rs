@@ -1,16 +1,16 @@
 use anyhow::{anyhow, Context, Result};
 use argon2::{
-    password_hash::{Error as PasswordHashError, SaltString},
-    Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
+    Argon2,
+    password_hash::{Error as PasswordHashError, SaltString}, PasswordHash, PasswordHasher, PasswordVerifier,
 };
-
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use axum::{extract::State, http::StatusCode, Json, response::IntoResponse};
 use sqlx::PgPool;
 use tokio::task;
 use validator::Validate;
 
-use super::types::SignFormRequest;
 use crate::error::{AppError, AuthRepoError};
+use crate::repository::auth;
+use crate::types::SignFormRequest;
 
 pub async fn signup(
     State(pool): State<PgPool>,
@@ -23,25 +23,9 @@ pub async fn signup(
         .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
     signup_input.password = hashed_password;
 
-    sqlx::query!(
-        "insert into auth.accounts (email, password) values($1, $2);",
-        signup_input.email,
-        signup_input.password
-    )
-    .execute(&pool)
-    .await
-    .map_err(
-        |dbe| match dbe.as_database_error().unwrap().constraint().unwrap() {
-            "accounts_email_key" => AppError::AuthRepo(AuthRepoError::DuplicatedEmail(
-                "this email is already in use".to_string(),
-            )),
-            _ => AppError::UnexpectedError(
-                "something super weird happen in your request".to_string(),
-            ),
-        },
-    )?;
+    auth::signup(&pool, signup_input).await?;
 
-    Ok((StatusCode::CREATED, Json(signup_input)))
+    Ok(StatusCode::CREATED)
 }
 
 pub async fn signin(
@@ -50,16 +34,8 @@ pub async fn signin(
 ) -> Result<impl IntoResponse, AppError> {
     signin_input.validate()?;
 
-    let possible_user = sqlx::query!(
-        "select password from auth.accounts where email = $1",
-        signin_input.email
-    )
-    .fetch_optional(&pool)
-    .await
-    .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
-
-    if let Some(user) = possible_user {
-        let verified = verify(signin_input.password.clone(), user.password)
+    if let Some(account) = auth::signin(&pool, signin_input.email.clone()).await? {
+        let verified = verify(signin_input.password.clone(), account.password)
             .await
             .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
@@ -73,6 +49,8 @@ pub async fn signin(
     )))
 }
 
+// TODO: please move those functions bellow for better place
+
 async fn hash(input: String) -> Result<String> {
     task::spawn_blocking(move || {
         let salt = SaltString::generate(rand::thread_rng());
@@ -81,8 +59,8 @@ async fn hash(input: String) -> Result<String> {
             .map_err(|e| anyhow!(e).context("failed to hash password"))?
             .to_string())
     })
-    .await
-    .context("panic during hash password")?
+        .await
+        .context("panic during hash password")?
 }
 
 async fn verify(password: String, hash: String) -> Result<bool> {
@@ -98,6 +76,6 @@ async fn verify(password: String, hash: String) -> Result<bool> {
             Err(e) => Err(anyhow!(e).context("failed to verify password")),
         }
     })
-    .await
-    .context("panic during verify password")?
+        .await
+        .context("panic during verify password")?
 }

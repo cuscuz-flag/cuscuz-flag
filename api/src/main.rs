@@ -9,11 +9,12 @@ use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tokio::signal;
 use tower_http::cors::{Any, CorsLayer};
 
-mod error;
-mod extractors;
-mod handlers;
-
 pub use handlers::{signin, signup};
+
+mod error;
+mod handlers;
+mod repository;
+mod types;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

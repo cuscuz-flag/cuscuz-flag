@@ -7,21 +7,14 @@ use axum::{
 };
 use jsonwebtoken::{decode, DecodingKey, EncodingKey, Validation};
 use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
 
 use crate::error::{AppError, AuthRepoError};
+use crate::types::Claims;
 
 static KEYS: Lazy<Keys> = Lazy::new(|| {
     let secret = std::env::var("JWT_SECRET").expect("JWT must be set");
     Keys::new(secret.as_bytes())
 });
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Claims {
-    pub sub: String,
-    pub company: String,
-    pub exp: usize,
-}
 
 pub struct Keys {
     pub encoding: EncodingKey,

@@ -77,8 +77,8 @@ where
                     422 => Err(Error::UnprocessableEntity(error_info)),
                     _ => Err(Error::RequestError),
                 }
-                    } else {
-                        Err(Error::DeserializeError)
+            } else {
+                Err(Error::DeserializeError)
             }
         }
     } else {
