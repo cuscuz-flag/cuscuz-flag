@@ -1,12 +1,14 @@
 use web_sys::HtmlInputElement;
-
 use yew::prelude::*;
 use yew_hooks::prelude::*;
+use yew_router::prelude::*;
 
 use crate::components::list_errors::ListErrors;
 use crate::hooks::use_user_context;
 use crate::services::auth::signup;
 use crate::types::SignUpForm;
+
+use super::Route;
 
 #[function_component(SignUpPage)]
 pub fn signup_page() -> Html {
@@ -67,6 +69,13 @@ pub fn signup_page() -> Html {
                         <p class="title is-2">{ "Sign Up" }</p>
                     </div>
 
+                    <div class="field is-grouped is-grouped-centered">
+                        <p>
+                            { "Already have an account? "}
+                            <Link<Route> to={Route::SignIn} classes="is-primary">{ "Go to sign in page" }</Link<Route>>
+                        </p>
+                    </div>
+
                     <ListErrors error={user_signup.error.clone() } />
 
                     <div class="field">
@@ -80,7 +89,7 @@ pub fn signup_page() -> Html {
                         </div>
                     </div>
                     <div class="field is-grouped is-grouped-centered">
-                        <button class="button is-warning is-light" type="submit">{ "Get started" }</button>
+                        <button class="button is-warning is-fullwidth" type="submit">{ "Get started" }</button>
                     </div>
                 </form>
             </div>
