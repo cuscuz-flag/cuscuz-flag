@@ -8,7 +8,7 @@ use crate::hooks::use_user_context;
 use crate::services::auth::signup;
 use crate::types::SignUpForm;
 
-#[function_component(Register)]
+#[function_component(SignUpPage)]
 pub fn signup_page() -> Html {
     let user_ctx = use_user_context();
     // Create initial state
