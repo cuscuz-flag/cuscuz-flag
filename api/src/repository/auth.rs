@@ -2,7 +2,7 @@ use anyhow::Result;
 use sqlx::PgPool;
 
 use crate::error::{AppError, AuthRepoError};
-use crate::types::{AccountPassword, SignFormRequest};
+use crate::types::{Account, SignFormRequest};
 
 pub async fn signup(pool: &PgPool, signup_input: SignFormRequest) -> Result<(), AppError> {
     sqlx::query!(
@@ -26,10 +26,10 @@ pub async fn signup(pool: &PgPool, signup_input: SignFormRequest) -> Result<(), 
     Ok(())
 }
 
-pub async fn signin(pool: &PgPool, email: String) -> Result<Option<AccountPassword>, AppError> {
+pub async fn signin(pool: &PgPool, email: String) -> Result<Option<Account>, AppError> {
     let possible_account = sqlx::query_as!(
-        AccountPassword,
-        "select password from auth.accounts where email = $1",
+        Account,
+        "select id, email, password from auth.accounts where email = $1",
         email
     )
     .fetch_optional(pool)

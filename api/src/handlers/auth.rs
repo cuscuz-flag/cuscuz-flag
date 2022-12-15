@@ -1,16 +1,20 @@
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use anyhow::{anyhow, Context, Result};
 use argon2::{
-    Argon2,
-    password_hash::{Error as PasswordHashError, SaltString}, PasswordHash, PasswordHasher, PasswordVerifier,
+    password_hash::{Error as PasswordHashError, SaltString},
+    Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
 };
-use axum::{extract::State, http::StatusCode, Json, response::IntoResponse};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use jsonwebtoken::{encode, Header};
 use sqlx::PgPool;
 use tokio::task;
 use validator::Validate;
 
 use crate::error::{AppError, AuthRepoError};
-use crate::repository::auth;
-use crate::types::SignFormRequest;
+use crate::handlers::extractors::KEYS;
+use crate::repository::{auth, orgs};
+use crate::types::{Claims, SignFormRequest, UserInfo};
 
 pub async fn signup(
     State(pool): State<PgPool>,
@@ -39,8 +43,17 @@ pub async fn signin(
             .await
             .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
+        let user_info = UserInfo {
+            email: account.email,
+            token: generate_jwt(&Claims {
+                sub: account.id.to_string(),
+                exp: default_exp()?,
+            })?,
+            onboarded: orgs::has_org(&pool, account.id).await?,
+        };
+
         if verified {
-            return Ok((StatusCode::OK, Json(signin_input)));
+            return Ok((StatusCode::OK, Json(user_info)));
         }
     }
 
@@ -59,8 +72,8 @@ async fn hash(input: String) -> Result<String> {
             .map_err(|e| anyhow!(e).context("failed to hash password"))?
             .to_string())
     })
-        .await
-        .context("panic during hash password")?
+    .await
+    .context("panic during hash password")?
 }
 
 async fn verify(password: String, hash: String) -> Result<bool> {
@@ -76,6 +89,18 @@ async fn verify(password: String, hash: String) -> Result<bool> {
             Err(e) => Err(anyhow!(e).context("failed to verify password")),
         }
     })
-        .await
-        .context("panic during verify password")?
+    .await
+    .context("panic during verify password")?
+}
+
+fn generate_jwt(clams: &Claims) -> Result<String, AppError> {
+    encode(&Header::default(), clams, &KEYS.encoding)
+        .map_err(|e| AppError::AuthRepo(AuthRepoError::TokenCreation(e.to_string())))
+}
+
+fn default_exp() -> Result<usize, AppError> {
+    Ok((SystemTime::now() + Duration::from_secs(60 * 60 * 7 * 24))
+        .duration_since(UNIX_EPOCH)
+        .map_err(|e| AppError::UnexpectedError(e.to_string()))?
+        .as_secs() as usize)
 }

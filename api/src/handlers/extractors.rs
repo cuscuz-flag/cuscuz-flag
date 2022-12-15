@@ -11,7 +11,7 @@ use once_cell::sync::Lazy;
 use crate::error::{AppError, AuthRepoError};
 use crate::types::Claims;
 
-static KEYS: Lazy<Keys> = Lazy::new(|| {
+pub static KEYS: Lazy<Keys> = Lazy::new(|| {
     let secret = std::env::var("JWT_SECRET").expect("JWT must be set");
     Keys::new(secret.as_bytes())
 });

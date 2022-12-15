@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 use validator::Validate;
 
 use crate::handlers::validator::validate_password_strength;
@@ -27,12 +28,13 @@ pub struct UserInfo {
 #[serde(rename_all = "camelCase")]
 pub struct Claims {
     pub sub: String,
-    pub company: String,
     pub exp: usize,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountPassword {
+pub struct Account {
+    pub id: Uuid,
+    pub email: String,
     pub password: String,
 }
