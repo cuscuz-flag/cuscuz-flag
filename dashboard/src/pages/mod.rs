@@ -1,8 +1,13 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-pub mod signup;
+use index::IndexPage;
+use signin::SignInPage;
 use signup::SignUpPage;
+
+pub mod index;
+pub mod signin;
+pub mod signup;
 
 #[derive(Clone, Routable, PartialEq)]
 pub enum Route {
@@ -10,6 +15,10 @@ pub enum Route {
     Home,
     #[at("/sign-up")]
     SignUp,
+    #[at("/sign-in")]
+    SignIn,
+    #[at("/dashboard")]
+    Dashboard,
 }
 
 /// https://github.com/jetli/rust-yew-realworld-example-app/tree/master/crates/conduit-wasm/src/routes
@@ -24,5 +33,7 @@ pub fn switch(routes: Route) -> Html {
             </>
         },
         Route::SignUp => html! { <SignUpPage /> },
+        Route::SignIn => html! { <SignInPage /> },
+        Route::Dashboard => html! { <IndexPage /> },
     }
 }
