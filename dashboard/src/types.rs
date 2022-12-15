@@ -8,12 +8,6 @@ pub struct UserInfo {
     pub onboarded: bool,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
-#[serde(rename_all = "camelCase")]
-pub struct UserInfoWrapper {
-    pub user: UserInfo,
-}
-
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SignUpForm {

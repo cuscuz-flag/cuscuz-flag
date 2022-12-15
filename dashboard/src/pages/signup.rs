@@ -23,7 +23,7 @@ pub fn signup_page() -> Html {
         use_effect_with_deps(
             move |user_signup| {
                 if let Some(user_info) = &user_signup.data {
-                    user_ctx.login(user_info.user.clone())
+                    user_ctx.login(user_info.clone())
                 }
                 || ()
             },
