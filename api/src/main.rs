@@ -8,6 +8,8 @@ use axum::{
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tokio::signal;
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::trace::TraceLayer;
+use tracing_subscriber::{util::SubscriberInitExt, layer::SubscriberExt};
 
 pub use handlers::{signin, signup};
 
@@ -18,6 +20,14 @@ mod types;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "api=debug,tower_http=debug".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
     let database_url = dotenvy::var("DATABASE_URL").context("DATABASE_URL must be set")?;
     let pool = PgPoolOptions::new()
         .max_connections(2)
@@ -41,6 +51,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
         .route("/ping", get(|| async { "pong" }))
+        .layer(TraceLayer::new_for_http())
         .layer(
             CorsLayer::new()
                 .allow_origin(Any)
