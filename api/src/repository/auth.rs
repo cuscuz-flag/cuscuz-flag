@@ -4,13 +4,14 @@ use sqlx::PgPool;
 use crate::error::{AppError, AuthRepoError};
 use crate::types::{Account, SignFormRequest};
 
-pub async fn signup(pool: &PgPool, signup_input: SignFormRequest) -> Result<(), AppError> {
-    sqlx::query!(
-        "insert into auth.accounts (email, password) values($1, $2);",
+pub async fn signup(pool: &PgPool, signup_input: SignFormRequest) -> Result<Account, AppError> {
+    let account = sqlx::query_as!(
+        Account,
+        "insert into auth.accounts (email, password) values($1, $2) returning id, email, password;",
         signup_input.email,
         signup_input.password
     )
-    .execute(pool)
+    .fetch_one(pool)
     .await
     .map_err(
         |dbe| match dbe.as_database_error().unwrap().constraint().unwrap() {
@@ -23,7 +24,7 @@ pub async fn signup(pool: &PgPool, signup_input: SignFormRequest) -> Result<(), 
         },
     )?;
 
-    Ok(())
+    Ok(account)
 }
 
 pub async fn signin(pool: &PgPool, email: String) -> Result<Option<Account>, AppError> {

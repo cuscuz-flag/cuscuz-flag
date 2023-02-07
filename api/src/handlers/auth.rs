@@ -27,9 +27,18 @@ pub async fn signup(
         .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
     signup_input.password = hashed_password;
 
-    auth::signup(&pool, signup_input).await?;
+    let new_account = auth::signup(&pool, signup_input).await?;
 
-    Ok(StatusCode::CREATED)
+    let user_info = UserInfo {
+        email: new_account.email,
+        token: generate_jwt(&Claims {
+            sub: new_account.id.to_string(),
+            exp: default_exp()?,
+        })?,
+        onboarded: orgs::has_org(&pool, new_account.id).await?,
+    };
+
+    Ok((StatusCode::CREATED, Json(user_info)))
 }
 
 pub async fn signin(
