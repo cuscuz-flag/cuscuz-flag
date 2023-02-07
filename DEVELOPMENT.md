@@ -36,6 +36,8 @@ under construction
 
 ### Migrations
 
+You should [install](https://docs.rs/crate/sqlx-cli/latest) `sqlx-cli` to run the commands below
+
 Under `api` folder, you can run the follow commands:
 
 - Create a migration file
