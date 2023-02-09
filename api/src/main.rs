@@ -50,6 +50,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
     Ok(Router::new()
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
+        .route("/me", get(|| async { "me" }))
         .route("/ping", get(|| async { "pong" }))
         .layer(TraceLayer::new_for_http())
         .layer(

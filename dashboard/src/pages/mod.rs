@@ -1,11 +1,11 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use index::IndexPage;
+use dashboard::DashboardPage;
 use signin::SignInPage;
 use signup::SignUpPage;
 
-pub mod index;
+pub mod dashboard;
 pub mod signin;
 pub mod signup;
 
@@ -34,6 +34,6 @@ pub fn switch(routes: Route) -> Html {
         },
         Route::SignUp => html! { <SignUpPage /> },
         Route::SignIn => html! { <SignInPage /> },
-        Route::Dashboard => html! { <IndexPage /> },
+        Route::Dashboard => html! { <DashboardPage /> },
     }
 }

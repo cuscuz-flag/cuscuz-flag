@@ -8,6 +8,16 @@ pub struct UserInfo {
     pub onboarded: bool,
 }
 
+impl UserInfo {
+    pub fn is_authenticated(&self) -> bool {
+        !self.token.is_empty()
+    }
+
+    pub fn is_onboarded(&self) -> bool {
+        self.onboarded
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct SignUpForm {

@@ -73,8 +73,8 @@ where
                     403 => Err(Error::Forbidden(error_info)),
                     404 => Err(Error::NotFound(error_info)),
                     409 => Err(Error::Conflict(error_info)),
-                    500 => Err(Error::InternalServerError(error_info)),
                     422 => Err(Error::UnprocessableEntity(error_info)),
+                    500 => Err(Error::InternalServerError(error_info)),
                     _ => Err(Error::RequestError),
                 }
             } else {

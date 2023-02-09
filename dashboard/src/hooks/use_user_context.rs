@@ -3,7 +3,7 @@ use std::{fmt, ops::Deref};
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use crate::{services::set_token, types::UserInfo};
+use crate::{pages::Route, services::set_token, types::UserInfo};
 
 pub struct UseUserContextHandle {
     inner: UseStateHandle<UserInfo>,
@@ -15,16 +15,14 @@ impl UseUserContextHandle {
         set_token(Some(value.token.clone()));
         self.inner.set(value);
 
-        // TODO: redirect to home page
-        // self.navigator.push(&)
+        self.navigator.push(&Route::Dashboard)
     }
 
     pub fn logout(&self) {
         set_token(None);
         self.inner.set(UserInfo::default());
 
-        // TODO: redirect to home page
-        // self.navigator.push(&Route)
+        self.navigator.push(&Route::Home)
     }
 }
 
