@@ -38,3 +38,9 @@ pub struct Account {
     pub email: String,
     pub password: String,
 }
+
+#[derive(Deserialize, Serialize, Validate)]
+pub struct CreateOrgRequest {
+    #[validate(required)]
+    pub name: Option<String>,
+}

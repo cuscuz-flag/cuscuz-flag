@@ -13,6 +13,9 @@ pub enum AppError {
     AuthRepo(#[from] AuthRepoError),
 
     #[error(transparent)]
+    OrgRepo(#[from] OrgsRepoError),
+
+    #[error(transparent)]
     ValidationError(#[from] ValidationErrors),
 
     #[error("{0}")]
@@ -35,9 +38,23 @@ pub enum AuthRepoError {
     InvalidToken(String),
 }
 
+#[derive(Debug, Error)]
+pub enum OrgsRepoError {
+    #[error("{0}")]
+    NotFound(String),
+    #[error("{0}")]
+    DuplicatedOrg(String),
+}
+
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status_code, error_message) = match self {
+            AppError::OrgRepo(OrgsRepoError::DuplicatedOrg(message)) => {
+                (StatusCode::CONFLICT, message)
+            }
+            AppError::OrgRepo(OrgsRepoError::NotFound(message)) => {
+                (StatusCode::NOT_FOUND, message)
+            }
             AppError::AuthRepo(AuthRepoError::DuplicatedEmail(message)) => {
                 (StatusCode::CONFLICT, message)
             }

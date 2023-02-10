@@ -9,9 +9,9 @@ use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tokio::signal;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
-use tracing_subscriber::{util::SubscriberInitExt, layer::SubscriberExt};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-pub use handlers::{signin, signup};
+pub use handlers::{create_org, signin, signup};
 
 mod error;
 mod handlers;
@@ -50,6 +50,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
     Ok(Router::new()
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
+        .route("/orgs", post(create_org))
         .route("/me", get(|| async { "me" }))
         .route("/ping", get(|| async { "pong" }))
         .layer(TraceLayer::new_for_http())
