@@ -44,3 +44,13 @@ pub struct CreateOrgRequest {
     #[validate(required)]
     pub name: Option<String>,
 }
+
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OrganizationInfo {
+    #[serde(skip_serializing)]
+    pub id: Uuid,
+    pub name: String,
+    pub slug: String,
+}

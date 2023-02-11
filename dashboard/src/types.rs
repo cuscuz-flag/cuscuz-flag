@@ -24,3 +24,16 @@ pub struct SignUpForm {
     pub email: String,
     pub password: String,
 }
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct OrganizationInfo {
+    pub name: String,
+    pub slug: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateOrgForm {
+    pub name: String,
+}

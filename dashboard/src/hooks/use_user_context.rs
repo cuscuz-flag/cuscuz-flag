@@ -13,9 +13,13 @@ pub struct UseUserContextHandle {
 impl UseUserContextHandle {
     pub fn login(&self, value: UserInfo) {
         set_token(Some(value.token.clone()));
-        self.inner.set(value);
+        self.inner.set(value.clone());
 
-        self.navigator.push(&Route::Dashboard)
+        if value.is_onboarded() {
+            self.navigator.push(&Route::Dashboard)
+        } else {
+            self.navigator.push(&Route::SetupOrg)
+        }
     }
 
     pub fn logout(&self) {

@@ -2,10 +2,12 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use dashboard::DashboardPage;
+use setup_org::SetupOrgPage;
 use signin::SignInPage;
 use signup::SignUpPage;
 
 pub mod dashboard;
+pub mod setup_org;
 pub mod signin;
 pub mod signup;
 
@@ -19,6 +21,8 @@ pub enum Route {
     SignIn,
     #[at("/dashboard")]
     Dashboard,
+    #[at("/setup-org")]
+    SetupOrg,
 }
 
 /// https://github.com/jetli/rust-yew-realworld-example-app/tree/master/crates/conduit-wasm/src/routes
@@ -35,5 +39,6 @@ pub fn switch(routes: Route) -> Html {
         Route::SignUp => html! { <SignUpPage /> },
         Route::SignIn => html! { <SignInPage /> },
         Route::Dashboard => html! { <DashboardPage /> },
+        Route::SetupOrg => html! { <SetupOrgPage /> },
     }
 }
