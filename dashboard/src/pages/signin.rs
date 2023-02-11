@@ -3,7 +3,10 @@ use yew::prelude::*;
 use yew_hooks::use_async;
 use yew_router::prelude::*;
 
-use crate::{components::list_errors::ListErrors, hooks::use_user_context, services::auth::signin, types::SignUpForm};
+use crate::{
+    components::list_errors::ListErrors, hooks::use_user_context, services::auth::signin,
+    types::SignUpForm,
+};
 
 use super::Route;
 
@@ -14,7 +17,7 @@ pub fn signin_page() -> Html {
 
     let user_signin = {
         let signin_info = signin_info.clone();
-        use_async(async move { signin((*signin_info).clone()).await })      
+        use_async(async move { signin((*signin_info).clone()).await })
     };
 
     {
