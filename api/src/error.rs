@@ -52,9 +52,7 @@ impl IntoResponse for AppError {
             AppError::OrgRepo(OrgsRepoError::DuplicatedOrg(message)) => {
                 (StatusCode::CONFLICT, message)
             }
-            AppError::OrgRepo(OrgsRepoError::NotFound(message)) => {
-                (StatusCode::NOT_FOUND, message)
-            }
+            AppError::OrgRepo(OrgsRepoError::NotFound(message)) => (StatusCode::NOT_FOUND, message),
             AppError::AuthRepo(AuthRepoError::DuplicatedEmail(message)) => {
                 (StatusCode::CONFLICT, message)
             }
@@ -71,7 +69,7 @@ impl IntoResponse for AppError {
                 (StatusCode::INTERNAL_SERVER_ERROR, message)
             }
             AppError::AuthRepo(AuthRepoError::InvalidToken(message)) => {
-                (StatusCode::BAD_REQUEST, message)
+                (StatusCode::UNAUTHORIZED, message)
             }
             AppError::UnexpectedError(message) => (StatusCode::INTERNAL_SERVER_ERROR, message),
             AppError::ValidationError(_) => (
