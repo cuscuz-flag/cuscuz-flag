@@ -25,15 +25,11 @@ pub enum Route {
     SetupOrg,
 }
 
-/// https://github.com/jetli/rust-yew-realworld-example-app/tree/master/crates/conduit-wasm/src/routes
-/// https://github.com/jetli/rust-yew-realworld-example-app/blob/master/crates/conduit-wasm/src/types/auth.rs
-
 pub fn switch(routes: Route) -> Html {
     match routes {
         Route::Home => html! {
             <>
-                <h1 class="title is-1"> { "Cuscuz Flag" } </h1>
-                <Link<Route> to={Route::SignUp} classes="button is-primary">{ "Sign up page" }</Link<Route>>
+                <h1 class="title is-1"> { "Home" } </h1>
             </>
         },
         Route::SignUp => html! { <SignUpPage /> },

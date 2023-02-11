@@ -47,8 +47,12 @@ pub fn user_context_provider(props: &Props) -> Html {
     }
 
     html! {
-        <ContextProvider<UseStateHandle<UserInfo>> context={user_ctx}>
-            { for props.children.iter() }
-        </ContextProvider<UseStateHandle<UserInfo>>>
+        <section class="section">
+            <div class="container">
+                <ContextProvider<UseStateHandle<UserInfo>> context={user_ctx}>
+                    { for props.children.iter() }
+                </ContextProvider<UseStateHandle<UserInfo>>>
+            </div>
+        </section>
     }
 }
