@@ -15,7 +15,7 @@ pub fn list_errors(props: &Props) -> Html {
             <div class="notification is-danger">
             {
                 match error {
-                    Error::BadRequest(body) | Error::Conflict(body) => {
+                    Error::BadRequest(body) | Error::Conflict(body) | Error::NotFound(body) => {
                         html! {
                             <>
                                 { body.message.clone() }

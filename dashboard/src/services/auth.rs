@@ -9,3 +9,7 @@ pub async fn me() -> Result<UserInfo, Error> {
 pub async fn signup(signup: SignUpForm) -> Result<UserInfo, Error> {
     request_post::<SignUpForm, UserInfo>("/sign-up".to_string(), signup).await
 }
+
+pub async fn signin(signup: SignUpForm) -> Result<UserInfo, Error> {
+    request_post::<SignUpForm, UserInfo>("/sign-in".to_string(), signup).await
+}
