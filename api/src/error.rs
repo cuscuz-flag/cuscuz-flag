@@ -4,6 +4,7 @@ use axum::{
     Json,
 };
 use serde_json::json;
+use sqlx::postgres::PgDatabaseError;
 use thiserror::Error;
 use validator::ValidationErrors;
 
@@ -17,6 +18,9 @@ pub enum AppError {
 
     #[error(transparent)]
     ValidationError(#[from] ValidationErrors),
+
+    #[error(transparent)]
+    Sqlx(#[from] sqlx::Error),
 
     #[error("{0}")]
     UnexpectedError(String),
@@ -46,9 +50,33 @@ pub enum OrgsRepoError {
     DuplicatedOrg(String),
 }
 
+fn define_pgsqlx_error(sqlxerror: sqlx::Error) -> (hyper::StatusCode, String) {
+    if let Some(pgerror) = sqlxerror.as_database_error() {
+        let err: &PgDatabaseError = pgerror.downcast_ref();
+        if err.routine() == Some("_bt_check_unique") {
+            return (StatusCode::CONFLICT, "resource conflicted".to_string());
+        }
+    };
+
+    return (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        "an internal database error occurred".to_string(),
+    );
+}
+
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status_code, error_message) = match self {
+            AppError::Sqlx(sqlxerror) => match sqlxerror {
+                sqlx::Error::RowNotFound => {
+                    (StatusCode::NOT_FOUND, "resource not found".to_string())
+                }
+                sqlx::Error::Database(_) => define_pgsqlx_error(sqlxerror),
+                _ => (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    "an internal database error occured".to_string(),
+                ),
+            },
             AppError::OrgRepo(OrgsRepoError::DuplicatedOrg(message)) => {
                 (StatusCode::CONFLICT, message)
             }

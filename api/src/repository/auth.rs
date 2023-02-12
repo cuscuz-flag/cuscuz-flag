@@ -34,8 +34,7 @@ pub async fn signin(pool: &PgPool, email: String) -> Result<Option<Account>, App
         email
     )
     .fetch_optional(pool)
-    .await
-    .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+    .await?;
 
     Ok(possible_account)
 }
