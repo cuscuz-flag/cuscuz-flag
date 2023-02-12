@@ -1,4 +1,4 @@
-pub use auth::{signin, signup};
+pub use auth::{me, signin, signup};
 pub use orgs::create_org;
 
 pub mod auth;

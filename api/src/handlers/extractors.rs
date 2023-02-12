@@ -1,3 +1,5 @@
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
 use axum::{
     async_trait,
     extract::{FromRequestParts, TypedHeader},
@@ -50,6 +52,19 @@ where
             AppError::AuthRepo(AuthRepoError::InvalidToken("token is invalid".to_string()))
         })?;
 
+        if token_data.claims.exp < now_as_secs()? {
+            return Err(AppError::AuthRepo(AuthRepoError::InvalidToken(
+                "token is expired".to_string(),
+            )));
+        }
+
         Ok(token_data.claims)
     }
+}
+
+fn now_as_secs() -> Result<usize, AppError> {
+    Ok((SystemTime::now() + Duration::from_secs(0))
+        .duration_since(UNIX_EPOCH)
+        .map_err(|e| AppError::UnexpectedError(e.to_string()))?
+        .as_secs() as usize)
 }

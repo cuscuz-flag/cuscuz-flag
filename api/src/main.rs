@@ -11,7 +11,7 @@ use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-pub use handlers::{create_org, signin, signup};
+pub use handlers::{create_org, me, signin, signup};
 
 mod error;
 mod handlers;
@@ -51,7 +51,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
         .route("/orgs", post(create_org))
-        .route("/me", get(|| async { "me" }))
+        .route("/me", get(me))
         .route("/ping", get(|| async { "pong" }))
         .layer(TraceLayer::new_for_http())
         .layer(

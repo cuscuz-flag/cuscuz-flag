@@ -1,4 +1,7 @@
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::{
+    str::FromStr,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 use anyhow::{anyhow, Context, Result};
 use argon2::{
@@ -9,12 +12,30 @@ use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use jsonwebtoken::{encode, Header};
 use sqlx::PgPool;
 use tokio::task;
+use uuid::Uuid;
 use validator::Validate;
 
 use crate::error::{AppError, AuthRepoError};
 use crate::handlers::extractors::KEYS;
-use crate::repository::{auth, orgs};
+use crate::repository::{accounts, auth, orgs};
 use crate::types::{Claims, SignFormRequest, UserInfo};
+
+pub async fn me(claims: Claims, State(pool): State<PgPool>) -> Result<impl IntoResponse, AppError> {
+    let account_id = Uuid::from_str(claims.sub.as_str())
+        .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+    let account = accounts::get(&pool, account_id).await?;
+
+    let user_info = UserInfo {
+        email: account.email,
+        token: generate_jwt(&Claims {
+            sub: claims.sub,
+            exp: default_exp()?,
+        })?,
+        onboarded: orgs::has_org(&pool, account_id).await?,
+    };
+
+    Ok((StatusCode::OK, Json(user_info)))
+}
 
 pub async fn signup(
     State(pool): State<PgPool>,
