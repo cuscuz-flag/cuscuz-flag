@@ -29,7 +29,7 @@ pub async fn me(claims: Claims, State(pool): State<PgPool>) -> Result<impl IntoR
         email: account.email,
         token: generate_jwt(&Claims {
             sub: claims.sub,
-            exp: default_exp()?,
+            exp: claims.exp,
         })?,
         onboarded: orgs::has_org(&pool, account_id).await?,
     };
