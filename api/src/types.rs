@@ -45,7 +45,6 @@ pub struct CreateOrgRequest {
     pub name: Option<String>,
 }
 
-
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrganizationInfo {

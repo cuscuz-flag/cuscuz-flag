@@ -55,7 +55,9 @@ pub async fn create_org(
     .await
     .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    tx.commit().await.map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+    tx.commit()
+        .await
+        .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
     Ok(org)
 }
