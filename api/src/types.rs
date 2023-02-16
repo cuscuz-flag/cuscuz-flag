@@ -53,3 +53,41 @@ pub struct OrganizationInfo {
     pub name: String,
     pub slug: String,
 }
+
+#[derive(Deserialize, Serialize, Validate)]
+pub struct CreateOrgEnvironment {
+    #[validate(required)]
+    pub org_id: Option<Uuid>,
+    #[validate(required)]
+    pub name: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OrgEnvironment {
+    pub id: Uuid,
+    pub org_id: Uuid,
+    pub name: String,
+}
+
+#[derive(Deserialize, Serialize, Validate)]
+pub struct CreateOrgFeatureFlag {
+    #[validate(required)]
+    pub env_id: Option<Uuid>,
+    #[validate(required)]
+    pub name: Option<String>,
+    #[validate(required)]
+    pub value: Option<bool>,
+}
+
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FeatureFlag {
+    pub id: Uuid,
+    pub env_id: Uuid,
+    pub name: String,
+    pub public_name: String,
+    pub description: Option<String>,
+    pub value: bool,
+}
