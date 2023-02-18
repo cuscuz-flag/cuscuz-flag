@@ -7,7 +7,8 @@ authors.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dotenv_codegen = "0.15.0"
+dotenvy = "0.15.6"
+dotenvy_macro = "0.15.1"
 gloo = "0.8.0"
 lazy_static = "1.4.0"
 log = "0.4.17"

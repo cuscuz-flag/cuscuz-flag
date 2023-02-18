@@ -11,6 +11,7 @@ mod pages;
 mod services;
 mod types;
 
+
 #[function_component(App)]
 fn app() -> Html {
     html! {

@@ -1,4 +1,4 @@
-use dotenv_codegen::dotenv;
+use dotenvy_macro::dotenv;
 use gloo::storage::{LocalStorage, Storage};
 use lazy_static::lazy_static;
 use parking_lot::RwLock;
