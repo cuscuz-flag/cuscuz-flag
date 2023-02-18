@@ -2,7 +2,10 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::handlers::validator::validate_password_strength;
+use crate::handlers::validator::{
+    validate_is_screamingsnake_case,
+    validate_password_strength,
+};
 
 #[derive(Deserialize, Serialize, Validate)]
 pub struct SignFormRequest {
@@ -72,12 +75,15 @@ pub struct OrgEnvironment {
 pub struct CreateOrgFeatureFlag {
     #[validate(required)]
     pub env_id: Option<Uuid>,
-    #[validate(required)]
+    #[validate(custom(
+        function = "validate_is_screamingsnake_case",
+        message = "please insert a screaming snake case value"
+    ))]
     pub name: Option<String>,
     #[validate(required)]
     pub value: Option<bool>,
+    pub description: Option<String>,
 }
-
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
