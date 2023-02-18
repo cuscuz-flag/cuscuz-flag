@@ -2,7 +2,7 @@ use std::net::SocketAddr;
 
 use anyhow::{Context, Result};
 use axum::{
-    routing::{get, post},
+    routing::{get, patch, post},
     Router,
 };
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
@@ -11,7 +11,9 @@ use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-pub use handlers::{create_org, create_enviroments, create_feature_flag ,me, signin, signup};
+pub use handlers::{
+    create_enviroments, create_feature_flag, create_org, me, signin, signup, toggle_feature_flag,
+};
 
 mod error;
 mod handlers;
@@ -53,6 +55,10 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route("/orgs", post(create_org))
         .route("/orgs/environments", post(create_enviroments))
         .route("/orgs/feature-flags", post(create_feature_flag))
+        .route(
+            "/orgs/feature-flags/:flag_id/toggle",
+            patch(toggle_feature_flag),
+        )
         .route("/me", get(me))
         .route("/ping", get(|| async { "pong" }))
         .layer(TraceLayer::new_for_http())

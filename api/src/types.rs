@@ -95,3 +95,15 @@ pub struct FeatureFlag {
     pub description: Option<String>,
     pub value: bool,
 }
+
+#[derive(Deserialize, Serialize, Validate)]
+pub struct ToogleFeatureFlagRequest {
+    #[validate(required)]
+    pub value: Option<bool>,
+}
+
+impl ToogleFeatureFlagRequest {
+    pub fn toogle_value(&mut self) {
+        self.value = Some(!self.value.unwrap())
+    }
+}

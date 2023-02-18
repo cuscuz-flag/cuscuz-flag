@@ -1,6 +1,10 @@
 use std::str::FromStr;
 
-use axum::{extract::State, response::IntoResponse, Json};
+use axum::{
+    extract::{Path, State},
+    response::IntoResponse,
+    Json,
+};
 use hyper::StatusCode;
 use inflector::cases::sentencecase::to_sentence_case;
 use sqlx::PgPool;
@@ -10,7 +14,10 @@ use validator::Validate;
 use crate::{
     error::AppError,
     repository::orgs,
-    types::{Claims, CreateOrgEnvironment, CreateOrgFeatureFlag, CreateOrgRequest},
+    types::{
+        Claims, CreateOrgEnvironment, CreateOrgFeatureFlag, CreateOrgRequest,
+        ToogleFeatureFlagRequest,
+    },
 };
 
 pub async fn create_org(
@@ -73,4 +80,19 @@ pub async fn create_feature_flag(
     .await?;
 
     Ok((StatusCode::CREATED, Json(new_ff)))
+}
+
+pub async fn toggle_feature_flag(
+    _user: Claims,
+    Path(flag_id): Path<Uuid>,
+    State(pool): State<PgPool>,
+    Json(mut request): Json<ToogleFeatureFlagRequest>,
+) -> Result<impl IntoResponse, AppError> {
+    request.validate()?;
+
+    request.toogle_value();
+
+    orgs::toggle_flag(&pool, flag_id, request.value.unwrap()).await?;
+
+    Ok(StatusCode::OK)
 }

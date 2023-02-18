@@ -115,3 +115,15 @@ pub async fn create_feature_flag(
 
     Ok(ff)
 }
+
+pub async fn toggle_flag(pool: &PgPool, feature_id: Uuid, new_value: bool) -> Result<(), AppError> {
+    sqlx::query!(
+        "update orgs.feature_flags set value = $1, updated_at = now() where id = $2 returning id",
+        new_value,
+        feature_id
+    )
+    .fetch_one(pool)
+    .await?;
+
+    Ok(())
+}
