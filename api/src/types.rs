@@ -2,10 +2,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use validator::Validate;
 
-use crate::handlers::validator::{
-    validate_is_screamingsnake_case,
-    validate_password_strength,
-};
+use crate::handlers::validator::{validate_is_screamingsnake_case, validate_password_strength};
 
 #[derive(Deserialize, Serialize, Validate)]
 pub struct SignFormRequest {
@@ -97,13 +94,13 @@ pub struct FeatureFlag {
 }
 
 #[derive(Deserialize, Serialize, Validate)]
-pub struct ToogleFeatureFlagRequest {
+pub struct ToggleFeatureFlagRequest {
     #[validate(required)]
     pub value: Option<bool>,
 }
 
-impl ToogleFeatureFlagRequest {
-    pub fn toogle_value(&mut self) {
+impl ToggleFeatureFlagRequest {
+    pub fn toggle_value(&mut self) {
         self.value = Some(!self.value.unwrap())
     }
 }

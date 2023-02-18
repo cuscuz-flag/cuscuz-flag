@@ -55,8 +55,7 @@ pub async fn create_org(
     .await
     .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    tx.commit()
-        .await?;
+    tx.commit().await?;
 
     Ok(org)
 }
@@ -87,8 +86,7 @@ pub async fn create_environment(
     .fetch_one(&mut tx)
     .await?;
 
-    tx.commit()
-        .await?;
+    tx.commit().await?;
 
     Ok(environment)
 }

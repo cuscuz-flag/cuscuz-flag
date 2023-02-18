@@ -16,7 +16,7 @@ use crate::{
     repository::orgs,
     types::{
         Claims, CreateOrgEnvironment, CreateOrgFeatureFlag, CreateOrgRequest,
-        ToogleFeatureFlagRequest,
+        ToggleFeatureFlagRequest,
     },
 };
 
@@ -56,7 +56,7 @@ pub async fn create_feature_flag(
     State(pool): State<PgPool>,
     Json(ff_request): Json<CreateOrgFeatureFlag>,
 ) -> Result<impl IntoResponse, AppError> {
-     ff_request.validate()?;
+    ff_request.validate()?;
 
     let CreateOrgFeatureFlag {
         env_id,
@@ -86,11 +86,11 @@ pub async fn toggle_feature_flag(
     _user: Claims,
     Path(flag_id): Path<Uuid>,
     State(pool): State<PgPool>,
-    Json(mut request): Json<ToogleFeatureFlagRequest>,
+    Json(mut request): Json<ToggleFeatureFlagRequest>,
 ) -> Result<impl IntoResponse, AppError> {
     request.validate()?;
 
-    request.toogle_value();
+    request.toggle_value();
 
     orgs::toggle_flag(&pool, flag_id, request.value.unwrap()).await?;
 
