@@ -57,8 +57,6 @@ pub struct OrganizationInfo {
 #[derive(Deserialize, Serialize, Validate)]
 pub struct CreateOrgEnvironment {
     #[validate(required)]
-    pub org_id: Option<Uuid>,
-    #[validate(required)]
     pub name: Option<String>,
 }
 
