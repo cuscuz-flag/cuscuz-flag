@@ -23,10 +23,21 @@ pub fn header_component() -> Html {
             })
         };
         html! {
-          <div class="buttons">
-            <a {onclick} class="button is-warning">
-              { "Sign Out" }
-            </a>
+          <div class="columns">
+            <div class="column">
+              <div class="buttons">
+                <a class="button is-warning is-light">
+                  { "Organization Settings" }
+                </a>
+              </div>
+            </div>
+            <div class="column">
+              <div class="buttons">
+                <a {onclick} class="button is-warning">
+                  { "Sign Out" }
+                </a>
+              </div>
+            </div>
           </div>
         }
     };
