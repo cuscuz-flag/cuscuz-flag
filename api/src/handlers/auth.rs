@@ -39,16 +39,16 @@ pub async fn me(claims: Claims, State(pool): State<PgPool>) -> Result<impl IntoR
 
 pub async fn signup(
     State(pool): State<PgPool>,
-    Json(mut signup_input): Json<SignFormRequest>,
+    Json(mut request): Json<SignFormRequest>,
 ) -> Result<impl IntoResponse, AppError> {
-    signup_input.validate()?;
+    request.validate()?;
 
-    let hashed_password = hash(signup_input.password.clone())
+    let hashed_password = hash(request.password.clone())
         .await
         .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
-    signup_input.password = hashed_password;
+    request.password = hashed_password;
 
-    let new_account = auth::signup(&pool, signup_input).await?;
+    let new_account = auth::signup(&pool, request).await?;
 
     let user_info = UserInfo {
         email: new_account.email,
@@ -64,12 +64,12 @@ pub async fn signup(
 
 pub async fn signin(
     State(pool): State<PgPool>,
-    Json(signin_input): Json<SignFormRequest>,
+    Json(request): Json<SignFormRequest>,
 ) -> Result<impl IntoResponse, AppError> {
-    signin_input.validate()?;
+    request.validate()?;
 
-    if let Some(account) = auth::signin(&pool, signin_input.email.clone()).await? {
-        let verified = verify(signin_input.password.clone(), account.password)
+    if let Some(account) = auth::signin(&pool, request.email.clone()).await? {
+        let verified = verify(request.password.clone(), account.password)
             .await
             .map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 

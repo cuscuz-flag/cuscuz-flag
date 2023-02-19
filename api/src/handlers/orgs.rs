@@ -23,14 +23,14 @@ use crate::{
 pub async fn create_org(
     user: Claims,
     State(pool): State<PgPool>,
-    Json(org_request): Json<CreateOrgRequest>,
+    Json(request): Json<CreateOrgRequest>,
 ) -> Result<impl IntoResponse, AppError> {
-    org_request.validate()?;
+    request.validate()?;
 
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    let org = orgs::create_org(&pool, org_request.name.unwrap().clone(), member_id).await?;
+    let org = orgs::create_org(&pool, request.name.unwrap().clone(), member_id).await?;
 
     Ok((StatusCode::CREATED, Json(org)))
 }
@@ -38,15 +38,15 @@ pub async fn create_org(
 pub async fn create_enviroments(
     user: Claims,
     State(pool): State<PgPool>,
-    Json(env_request): Json<CreateOrgEnvironment>,
+    Json(request): Json<CreateOrgEnvironment>,
 ) -> Result<impl IntoResponse, AppError> {
-    env_request.validate()?;
+    request.validate()?;
 
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
     let new_env =
-        orgs::create_environment(&pool, env_request.name.unwrap().clone(), member_id).await?;
+        orgs::create_environment(&pool, request.name.unwrap().clone(), member_id).await?;
 
     Ok((StatusCode::CREATED, Json(new_env)))
 }
@@ -54,16 +54,16 @@ pub async fn create_enviroments(
 pub async fn create_feature_flag(
     _user: Claims,
     State(pool): State<PgPool>,
-    Json(ff_request): Json<CreateOrgFeatureFlag>,
+    Json(request): Json<CreateOrgFeatureFlag>,
 ) -> Result<impl IntoResponse, AppError> {
-    ff_request.validate()?;
+    request.validate()?;
 
     let CreateOrgFeatureFlag {
         env_id,
         name,
         value,
         description,
-    } = ff_request;
+    } = request;
 
     let name = name.unwrap().clone();
 
