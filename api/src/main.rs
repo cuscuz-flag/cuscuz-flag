@@ -5,6 +5,7 @@ use axum::{
     routing::{get, patch, post},
     Router,
 };
+use handlers::get_flags;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tokio::signal;
 use tower_http::cors::{Any, CorsLayer};
@@ -58,6 +59,10 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route(
             "/orgs/feature-flags/:flag_id/toggle",
             patch(toggle_feature_flag),
+        )
+        .route(
+            "/orgs/feature-flags/:flag_id",
+            get(get_flags),
         )
         .route("/me", get(me))
         .route("/ping", get(|| async { "pong" }))

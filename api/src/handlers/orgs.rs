@@ -45,8 +45,7 @@ pub async fn create_enviroments(
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    let new_env =
-        orgs::create_environment(&pool, request.name.unwrap().clone(), member_id).await?;
+    let new_env = orgs::create_environment(&pool, request.name.unwrap().clone(), member_id).await?;
 
     Ok((StatusCode::CREATED, Json(new_env)))
 }
@@ -95,4 +94,15 @@ pub async fn toggle_feature_flag(
     orgs::toggle_flag(&pool, flag_id, request.value.unwrap()).await?;
 
     Ok(StatusCode::OK)
+}
+
+pub async fn get_flags(
+    user: Claims,
+    Path(env_id): Path<Uuid>,
+    State(pool): State<PgPool>,
+) -> Result<impl IntoResponse, AppError> {
+    let member_id =
+        Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+
+    Ok((StatusCode::OK, Json(orgs::get_flags(&pool, member_id, env_id).await?)))
 }

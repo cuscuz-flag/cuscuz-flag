@@ -125,3 +125,27 @@ pub async fn toggle_flag(pool: &PgPool, feature_id: Uuid, new_value: bool) -> Re
 
     Ok(())
 }
+
+pub async fn get_flags(
+    pool: &PgPool,
+    member_id: Uuid,
+    env_id: Uuid,
+) -> Result<Vec<FeatureFlag>, AppError> {
+    let _env = sqlx::query!(
+        "select e.id from orgs.environments as e, orgs.members as m where m.member_id = $1 and m.org_id = e.org_id and e.id = $2;",
+        member_id,
+        env_id
+    )
+    .fetch_one(pool)
+    .await?;
+
+    let ffs = sqlx::query_as!(
+        FeatureFlag,
+        "select id, env_id, name, public_name, description, value from orgs.feature_flags where env_id = $1",
+        env_id
+    )
+    .fetch_all(pool)
+    .await?;
+
+    Ok(ffs)
+}
