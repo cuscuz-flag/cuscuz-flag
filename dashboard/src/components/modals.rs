@@ -95,8 +95,19 @@ pub fn new_env_modal(props: &Props) -> Html {
                   </form>
               </section>
               <footer class="modal-card-foot">
-                  <button onclick={onsubmit_env} class="button is-success">{ "Save" }</button>
-                  <button onclick={close_modal} class="button">{ "Cancel" }</button>
+                <button
+                    onclick={onsubmit_env}
+                    class="button is-success"
+                    disabled={new_env.name.clone().is_empty()}
+                >
+                    { "Save" }
+                </button>
+                <button
+                    onclick={close_modal}
+                    class="button"
+                >
+                    { "Cancel" }
+                </button>
               </footer>
           </div>
       </div>
@@ -195,8 +206,17 @@ pub fn new_ff_modal(props: &Props) -> Html {
                   </form>
               </section>
               <footer class="modal-card-foot">
-                  <button class="button is-success">{ "Save" }</button>
-                  <button onclick={close_modal} class="button">{ "Cancel" }</button>
+                <button
+                    class="button is-success"
+                >
+                    { "Save" }
+                </button>
+                <button
+                    onclick={close_modal}
+                    class="button"
+                >
+                    { "Cancel" }
+                </button>
               </footer>
           </div>
       </div>
