@@ -9,14 +9,14 @@ use crate::{
 };
 
 #[derive(PartialEq, Properties)]
-pub struct EnvProps {
+pub struct Props {
     #[prop_or_default]
     pub active: bool,
     pub on_close_modal: Callback<bool>,
 }
 
 #[function_component(NewEnvModal)]
-pub fn new_env_modal(props: &EnvProps) -> Html {
+pub fn new_env_modal(props: &Props) -> Html {
     let new_env = use_state(CreateEnvironment::default);
 
     let close_modal = {
@@ -34,7 +34,7 @@ pub fn new_env_modal(props: &EnvProps) -> Html {
 
     {
         let on_close_modal = props.on_close_modal.clone();
-        let new_env =  new_env.clone();
+        let new_env = new_env.clone();
         use_effect_with_deps(
             move |create_env_req| {
                 if let Some(_env_info) = &create_env_req.data {
@@ -103,15 +103,8 @@ pub fn new_env_modal(props: &EnvProps) -> Html {
     }
 }
 
-#[derive(PartialEq, Properties)]
-pub struct FFProps {
-    #[prop_or_default]
-    pub active: bool,
-    pub on_close_modal: Callback<bool>,
-}
-
 #[function_component(NewFFModal)]
-pub fn new_ff_modal(props: &FFProps) -> Html {
+pub fn new_ff_modal(props: &Props) -> Html {
     let new_ff = use_state(CreateFeatureFlag::default);
 
     let create_ff_req = {
