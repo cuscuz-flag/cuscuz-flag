@@ -36,86 +36,61 @@ pub fn dashboard() -> Html {
     };
 
     html! {
-        <>
-            <p class="title is-1">{ "Dashboard" }</p>
-
+        <div class="mt-3">
             <div class="columns">
-                <div class="column is-four-fifths">
+                <div class="column is-two-thirds">
                   <p class="subtitle">{ "Environments" }</p>
-                  <div class="columns">
-                    <div class="column">
-                        <div class="content is-medium">
-                            <ul>
-                                <li>{"PRODUCTION"}</li>
-                                <li>{"STAGING"}</li>
-                            </ul>
-                        </div>
-                    </div>
-                  </div>
                 </div>
 
                 <div class="column">
-                    <div class="columns">
-                        <div class="column">
-                            <button
-                                onclick={open_env_modal}
-                                class="button is-warning is-light is-fullwidth"
-                            >
-                                {"Create new Environment" }
-                            </button>
-                        </div>
+                    <button
+                        onclick={open_env_modal}
+                        class="button is-warning is-light">{ "Create new environment" }</button>
+                </div>
+
+                <div class="column">
+                    <div class="select is-warning is-small is-fullwidth">
+                        <select>
+                            <option>{"PRODUCTION"}</option>
+                            <option>{"STAGING"}</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
             <div class="columns">
                 <div class="column is-four-fifths">
-                  <p class="subtitle">{ "Feature Flags" }</p>
-                  <div class="columns">
-                    <div class="column is-half">
-                        <ul>
-                            <li>{"MYSQL_CACHE"}</li>
-                            <li>{"FIREBASE_LOGGING"}</li>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <ul>
-                            <li><span class="tag">{"PRODUCTION"}</span></li>
-                            <li><span class="tag">{"STAGING"}</span></li>
-                        </ul>
-                    </div>
-                    <div class="column">
-                        <ul>
-                            <li>
-                                <button
-                                    class="button is-danger is-light is-small is-fullwidth"
-                                >
-                                    {"Disable"}
-                                </button>
-                            </li>
-                            <li>
-                                <button
-                                    class="button is-success is-light is-small is-fullwidth"
-                                >
-                                    {"Active"}
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                  </div>
-                </div>
-                <div class="column">
+                    <p class="subtitle">{ "Feature flags" }</p>
                     <div class="columns">
+                        <div class="column is-half">
+                            // list of environments
+                            <ul>
+                                <li>{ "SHOW_DARK_UI" }</li>
+                                <li>{ "MONITORING_KEY_ENTER" }</li>
+                            </ul>
+                        </div>
                         <div class="column">
-                            <button
-                                onclick={open_ff_modal}
-                                class="button is-warning is-light is-fullwidth"
-                                data-target="modal-ff"
-                            >
-                                {"Create Feature Flag" }
-                            </button>
+                            // possible tags
+                            <ul>
+                                <li><span class="tag">{ "PROD" }</span></li>
+                                <li><span class="tag">{ "STAG" }</span></li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            // toggle feature flag
+                            <ul>
+                                <li><button class="button is-light is-fullwidth is-danger">{ "Disable" }</button></li>
+                                <li><button class="button is-light is-fullwidth is-success">{ "Active" }</button></li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+                <div class="column">
+                    <button
+                        onclick={open_ff_modal}
+                        class="button is-light is-fullwidth is-warning">
+                        { "Create feature flag" }
+                    </button>
                 </div>
             </div>
 
@@ -128,6 +103,6 @@ pub fn dashboard() -> Html {
               active={*active_env_modal}
               on_close_modal={close_env_modal}
             />
-        </>
+        </div>
     }
 }
