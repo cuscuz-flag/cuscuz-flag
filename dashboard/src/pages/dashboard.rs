@@ -1,6 +1,6 @@
 use yew::prelude::*;
 
-use crate::components::modals::{NewFFModal, NewEnvModal};
+use crate::components::modals::{NewEnvModal, NewFFModal};
 
 #[function_component(DashboardPage)]
 pub fn dashboard() -> Html {
@@ -87,14 +87,14 @@ pub fn dashboard() -> Html {
                     <div class="column">
                         <ul>
                             <li>
-                                <button 
+                                <button
                                     class="button is-danger is-light is-small is-fullwidth"
                                 >
                                     {"Disable"}
                                 </button>
                             </li>
                             <li>
-                                <button 
+                                <button
                                     class="button is-success is-light is-small is-fullwidth"
                                 >
                                     {"Active"}
@@ -119,8 +119,15 @@ pub fn dashboard() -> Html {
                 </div>
             </div>
 
-            <NewFFModal active={*active_ff_modal} on_close_modal={close_ff_modal} />
-            <NewEnvModal active={*active_env_modal} on_close_modal={close_env_modal} />
+            <NewFFModal
+              active={*active_ff_modal}
+              on_close_modal={close_ff_modal}
+            />
+
+            <NewEnvModal
+              active={*active_env_modal}
+              on_close_modal={close_env_modal}
+            />
         </>
     }
 }
