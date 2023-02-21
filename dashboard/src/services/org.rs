@@ -1,4 +1,4 @@
-use super::request_post;
+use super::{request_post, request_get};
 use crate::error::Error;
 use crate::types::{
     CreateEnvironment, CreateFeatureFlag, CreateOrgForm, EnvironmentInfo, FeatureFlagInfo,
@@ -17,4 +17,12 @@ pub async fn create_env(request: CreateEnvironment) -> Result<EnvironmentInfo, E
 pub async fn create_ff(request: CreateFeatureFlag) -> Result<FeatureFlagInfo, Error> {
     request_post::<CreateFeatureFlag, FeatureFlagInfo>("/orgs/feature-flags".to_string(), request)
         .await
+}
+
+pub async fn get_envs() -> Result<Vec<EnvironmentInfo>, Error> {
+    request_get::<Vec<EnvironmentInfo>>("/orgs/environments".to_string()).await
+}
+
+pub async fn get_flags(env_id: String) -> Result<Vec<FeatureFlagInfo>, Error> {
+    request_get::<Vec<FeatureFlagInfo>>(format!("/orgs/feature-flags/{}", env_id)).await
 }

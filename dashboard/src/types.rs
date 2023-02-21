@@ -56,6 +56,7 @@ pub struct EnvironmentInfo {
 #[serde(rename_all = "camelCase")]
 pub struct CreateFeatureFlag {
     pub name: String,
+    pub env_id: String,
     pub description: String,
     pub value: bool,
 }
