@@ -32,7 +32,19 @@ See [more details](https://trunkrs.dev/configuration/) here to trunk configurati
 
 ## API
 
-under construction
+### Database
+
+```bash
+docker compose -f infrastructure/docker-compose.yml up -d
+```
+
+### Running the project
+
+Inside of `api` folder, execute:
+
+```bash
+cargo run
+```
 
 ### Migrations
 
