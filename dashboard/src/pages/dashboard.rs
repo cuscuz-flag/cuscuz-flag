@@ -1,11 +1,18 @@
 use yew::prelude::*;
+use yew_hooks::use_local_storage;
 
-use crate::components::modals::{NewEnvModal, NewFFModal};
+use crate::components::{
+    dashboard::{Flags, SelectEnvs},
+    modals::{NewEnvModal, NewFFModal},
+};
 
 #[function_component(DashboardPage)]
 pub fn dashboard() -> Html {
+    let storage = use_local_storage::<String>("selected_env".to_string());
+
     let active_ff_modal = use_state(|| false);
     let active_env_modal = use_state(|| false);
+    let selected_env = use_state(String::default);
 
     let open_ff_modal = {
         let active_ff_modal = active_ff_modal.clone();
@@ -35,55 +42,40 @@ pub fn dashboard() -> Html {
         })
     };
 
+    let onclick_select_env = {
+        let selected_env = selected_env.clone();
+        let storage = storage.clone();
+
+        Callback::from(move |env: String| {
+            storage.set(env.clone());
+            selected_env.set(env);
+        })
+    };
+
     html! {
         <div class="mt-3">
             <div class="columns">
-                <div class="column is-two-thirds">
-                  <p class="subtitle">{ "Environments" }</p>
+                <div class="column is-four-fifths">
+                    <span class="subtitle">{ "Environments" }</span>
+
+                    <div class="select is-warning is-small pl-2">
+                        <SelectEnvs callback={onclick_select_env}/>
+                    </div>
                 </div>
 
                 <div class="column">
                     <button
                         onclick={open_env_modal}
-                        class="button is-warning is-light">{ "Create new environment" }</button>
+                        class="button is-warning is-light is-fullwidth">{ "Create new environment" }</button>
                 </div>
 
-                <div class="column">
-                    <div class="select is-warning is-small is-fullwidth">
-                        <select>
-                            <option>{"PRODUCTION"}</option>
-                            <option>{"STAGING"}</option>
-                        </select>
-                    </div>
-                </div>
             </div>
 
             <div class="columns">
                 <div class="column is-four-fifths">
+                    // TODO: add the name of selected env close to the Feature Flags
                     <p class="subtitle">{ "Feature flags" }</p>
-                    <div class="columns">
-                        <div class="column is-half">
-                            // list of environments
-                            <ul>
-                                <li>{ "SHOW_DARK_UI" }</li>
-                                <li>{ "MONITORING_KEY_ENTER" }</li>
-                            </ul>
-                        </div>
-                        <div class="column">
-                            // possible tags
-                            <ul>
-                                <li><span class="tag">{ "PROD" }</span></li>
-                                <li><span class="tag">{ "STAG" }</span></li>
-                            </ul>
-                        </div>
-                        <div class="column">
-                            // toggle feature flag
-                            <ul>
-                                <li><button class="button is-light is-fullwidth is-danger">{ "Disable" }</button></li>
-                                <li><button class="button is-light is-fullwidth is-success">{ "Active" }</button></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <Flags environment={ (*selected_env).clone() } />
                 </div>
                 <div class="column">
                     <button
