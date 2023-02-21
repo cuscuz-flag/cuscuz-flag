@@ -106,3 +106,13 @@ pub async fn get_flags(
 
     Ok((StatusCode::OK, Json(orgs::get_flags(&pool, member_id, env_id).await?)))
 }
+
+pub async fn get_envs(
+    user: Claims,
+    State(pool): State<PgPool>,
+) -> Result<impl IntoResponse, AppError> {
+    let member_id =
+        Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+
+    Ok((StatusCode::OK, Json(orgs::get_envs(&pool, member_id).await?)))
+}

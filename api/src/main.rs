@@ -13,7 +13,7 @@ use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 pub use handlers::{
-    create_enviroments, create_feature_flag, create_org, me, signin, signup, toggle_feature_flag,
+    create_enviroments, create_feature_flag, create_org, me, signin, signup, toggle_feature_flag, get_envs
 };
 
 mod error;
@@ -55,6 +55,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
         .route("/sign-in", post(signin))
         .route("/orgs", post(create_org))
         .route("/orgs/environments", post(create_enviroments))
+        .route("/orgs/environments", get(get_envs))
         .route("/orgs/feature-flags", post(create_feature_flag))
         .route(
             "/orgs/feature-flags/:flag_id/toggle",

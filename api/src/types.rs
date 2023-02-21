@@ -69,6 +69,7 @@ pub struct OrgEnvironment {
 }
 
 #[derive(Deserialize, Serialize, Validate)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateOrgFeatureFlag {
     #[validate(required)]
     pub env_id: Option<Uuid>,

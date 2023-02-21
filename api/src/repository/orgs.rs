@@ -149,3 +149,15 @@ pub async fn get_flags(
 
     Ok(ffs)
 }
+
+pub async fn get_envs(pool: &PgPool, member_id: Uuid) -> Result<Vec<OrgEnvironment>, AppError> {
+    let envs = sqlx::query_as!(
+        OrgEnvironment,
+        "select e.id, e.org_id, e.name from orgs.environments as e left join orgs.members as m on m.org_id = e.org_id where m.member_id = $1;",
+        member_id
+    )
+    .fetch_all(pool)
+    .await?;
+
+    Ok(envs)
+}
