@@ -1,6 +1,7 @@
 pub use auth::{me, signin, signup};
 pub use orgs::{
-    create_enviroments, create_feature_flag, create_org, get_envs, get_flags, toggle_feature_flag,
+    create_enviroments, create_feature_flag, create_org, get_envs, get_flags, get_org,
+    toggle_feature_flag,
 };
 
 pub mod auth;

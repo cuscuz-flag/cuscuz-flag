@@ -13,7 +13,8 @@ use tower_http::trace::TraceLayer;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 pub use handlers::{
-    create_enviroments, create_feature_flag, create_org, me, signin, signup, toggle_feature_flag, get_envs
+    create_enviroments, create_feature_flag, create_org, get_envs, me, signin, signup,
+    toggle_feature_flag, get_org,
 };
 
 mod error;
@@ -61,10 +62,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
             "/orgs/feature-flags/:flag_id/toggle",
             patch(toggle_feature_flag),
         )
-        .route(
-            "/orgs/feature-flags/:flag_id",
-            get(get_flags),
-        )
+        .route("/orgs/feature-flags/:flag_id", get(get_flags))
         .route("/me", get(me))
         .route("/ping", get(|| async { "pong" }))
         .layer(TraceLayer::new_for_http())

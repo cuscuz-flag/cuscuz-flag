@@ -104,7 +104,10 @@ pub async fn get_flags(
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    Ok((StatusCode::OK, Json(orgs::get_flags(&pool, member_id, env_id).await?)))
+    Ok((
+        StatusCode::OK,
+        Json(orgs::get_flags(&pool, member_id, env_id).await?),
+    ))
 }
 
 pub async fn get_envs(
@@ -114,5 +117,8 @@ pub async fn get_envs(
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    Ok((StatusCode::OK, Json(orgs::get_envs(&pool, member_id).await?)))
+    Ok((
+        StatusCode::OK,
+        Json(orgs::get_envs(&pool, member_id).await?),
+    ))
 }
