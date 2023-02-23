@@ -40,7 +40,9 @@ where
     T: DeserializeOwned + 'static + std::fmt::Debug,
     B: Serialize + std::fmt::Debug,
 {
-    let allow_body = method == reqwest::Method::POST || method == reqwest::Method::PUT || method == reqwest::Method::PATCH;
+    let allow_body = method == reqwest::Method::POST
+        || method == reqwest::Method::PUT
+        || method == reqwest::Method::PATCH;
     let url = format!("{}{}", API_ROOT, url);
     let mut builder = reqwest::Client::new()
         .request(method, url)

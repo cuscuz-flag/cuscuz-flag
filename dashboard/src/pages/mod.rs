@@ -40,6 +40,6 @@ pub fn switch(routes: Route) -> Html {
         Route::SignIn => html! { <SignInPage /> },
         Route::Dashboard => html! { <DashboardPage /> },
         Route::SetupOrg => html! { <SetupOrgPage /> },
-        Route::OrgSettings =>  html! { <OrganizationSettingsPage /> },
+        Route::OrgSettings => html! { <OrganizationSettingsPage /> },
     }
 }

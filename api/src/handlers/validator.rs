@@ -15,7 +15,7 @@ pub fn validate_password_strength(password: &str) -> Result<(), ValidationError>
 
 pub fn validate_is_screamingsnake_case(name: &str) -> Result<(), ValidationError> {
     if !is_screaming_snake_case(name) {
-        return Err(ValidationError::new("is not screaming snake case"))
+        return Err(ValidationError::new("is not screaming snake case"));
     }
     Ok(())
 }

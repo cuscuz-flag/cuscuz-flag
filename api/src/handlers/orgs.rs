@@ -57,7 +57,13 @@ pub async fn update_org(
     let member_id =
         Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
 
-    let org = orgs::update_org(&pool, request.id.unwrap().clone(), member_id, request.name.unwrap().clone()).await?;
+    let org = orgs::update_org(
+        &pool,
+        request.id.unwrap().clone(),
+        member_id,
+        request.name.unwrap().clone(),
+    )
+    .await?;
 
     Ok((StatusCode::OK, Json(org)))
 }

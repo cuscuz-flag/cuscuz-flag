@@ -3,7 +3,10 @@ use web_sys::HtmlInputElement;
 use yew::prelude::*;
 use yew_hooks::prelude::*;
 
-use crate::{services::org::{get_org, update_org}, types::UpdateOrganizationInfo};
+use crate::{
+    services::org::{get_org, update_org},
+    types::UpdateOrganizationInfo,
+};
 
 #[function_component(OrganizationSettingsPage)]
 pub fn organization_settigs() -> Html {
@@ -32,7 +35,6 @@ pub fn organization_settigs() -> Html {
             },
             get_org_req.clone(),
         )
-
     };
 
     let oninput_name = {

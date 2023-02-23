@@ -1,10 +1,9 @@
-use super::{request_post, request_get, request_patch};
+use super::{request_get, request_patch, request_post};
 use crate::error::Error;
 use crate::types::{
     CreateEnvironment, CreateFeatureFlag, CreateOrgForm, EnvironmentInfo, FeatureFlagInfo,
     OrganizationInfo, UpdateOrganizationInfo,
 };
-
 
 pub async fn get_org() -> Result<OrganizationInfo, Error> {
     request_get::<OrganizationInfo>("/orgs".to_string()).await
