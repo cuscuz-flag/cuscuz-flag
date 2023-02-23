@@ -54,7 +54,7 @@ async fn app(pool: Pool<Postgres>) -> Result<Router, Box<dyn std::error::Error>>
     Ok(Router::new()
         .route("/sign-up", post(signup))
         .route("/sign-in", post(signin))
-        .route("/orgs", post(create_org))
+        .route("/orgs", post(create_org).get(get_org))
         .route("/orgs/environments", post(create_enviroments))
         .route("/orgs/environments", get(get_envs))
         .route("/orgs/feature-flags", post(create_feature_flag))

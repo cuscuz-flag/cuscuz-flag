@@ -16,9 +16,21 @@ use crate::{
     repository::orgs,
     types::{
         Claims, CreateOrgEnvironment, CreateOrgFeatureFlag, CreateOrgRequest,
-        ToggleFeatureFlagRequest,
+        ToggleFeatureFlagRequest, UpdateOrgRequest,
     },
 };
+
+pub async fn get_org(
+    user: Claims,
+    State(pool): State<PgPool>,
+) -> Result<impl IntoResponse, AppError> {
+    let member_id =
+        Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+
+    let org = orgs::get_org(&pool, member_id).await?;
+
+    Ok((StatusCode::OK, Json(org)))
+}
 
 pub async fn create_org(
     user: Claims,
