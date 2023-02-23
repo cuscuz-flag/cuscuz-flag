@@ -2,11 +2,13 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use dashboard::DashboardPage;
+use org_settings::OrganizationSettingsPage;
 use setup_org::SetupOrgPage;
 use signin::SignInPage;
 use signup::SignUpPage;
 
 pub mod dashboard;
+pub mod org_settings;
 pub mod setup_org;
 pub mod signin;
 pub mod signup;
@@ -21,8 +23,10 @@ pub enum Route {
     SignIn,
     #[at("/dashboard")]
     Dashboard,
-    #[at("/setup-org")]
+    #[at("/orgs/setup")]
     SetupOrg,
+    #[at("/orgs/setting")]
+    OrgSettings,
 }
 
 pub fn switch(routes: Route) -> Html {
@@ -36,5 +40,6 @@ pub fn switch(routes: Route) -> Html {
         Route::SignIn => html! { <SignInPage /> },
         Route::Dashboard => html! { <DashboardPage /> },
         Route::SetupOrg => html! { <SetupOrgPage /> },
+        Route::OrgSettings =>  html! { <OrganizationSettingsPage /> },
     }
 }

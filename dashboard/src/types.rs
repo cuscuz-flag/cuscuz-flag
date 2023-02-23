@@ -28,8 +28,8 @@ pub struct SignUpForm {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct OrganizationInfo {
+    pub id: String,
     pub name: String,
-    pub slug: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]

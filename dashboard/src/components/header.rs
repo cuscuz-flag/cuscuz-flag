@@ -26,9 +26,9 @@ pub fn header_component() -> Html {
           <div class="columns">
             <div class="column">
               <div class="buttons">
-                <a class="button is-warning is-light">
+                <Link<Route> to={Route::OrgSettings} classes="button is-warning is-light">
                   { "Organization Settings" }
-                </a>
+                </Link<Route>>
               </div>
             </div>
             <div class="column">

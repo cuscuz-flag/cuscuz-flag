@@ -5,6 +5,11 @@ use crate::types::{
     OrganizationInfo,
 };
 
+
+pub async fn get_org() -> Result<OrganizationInfo, Error> {
+    request_get::<OrganizationInfo>("/orgs".to_string()).await
+}
+
 pub async fn create_org(orgform: CreateOrgForm) -> Result<OrganizationInfo, Error> {
     request_post::<CreateOrgForm, OrganizationInfo>("/orgs".to_string(), orgform).await
 }
