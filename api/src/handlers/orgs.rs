@@ -47,6 +47,21 @@ pub async fn create_org(
     Ok((StatusCode::CREATED, Json(org)))
 }
 
+pub async fn update_org(
+    user: Claims,
+    State(pool): State<PgPool>,
+    Json(request): Json<UpdateOrgRequest>,
+) -> Result<impl IntoResponse, AppError> {
+    request.validate()?;
+
+    let member_id =
+        Uuid::from_str(user.sub.as_str()).map_err(|e| AppError::UnexpectedError(e.to_string()))?;
+
+    let org = orgs::update_org(&pool, request.id.unwrap().clone(), member_id, request.name.unwrap().clone()).await?;
+
+    Ok((StatusCode::OK, Json(org)))
+}
+
 pub async fn create_enviroments(
     user: Claims,
     State(pool): State<PgPool>,

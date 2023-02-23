@@ -32,6 +32,13 @@ pub struct OrganizationInfo {
     pub name: String,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateOrganizationInfo {
+    pub id: String,
+    pub name: String,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateOrgForm {

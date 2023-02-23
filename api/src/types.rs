@@ -45,6 +45,14 @@ pub struct CreateOrgRequest {
     pub name: Option<String>,
 }
 
+#[derive(Deserialize, Serialize, Validate)]
+pub struct UpdateOrgRequest {
+    #[validate(required)]
+    pub id: Option<Uuid>,
+    #[validate(required)]
+    pub name: Option<String>,
+}
+
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrganizationInfo {

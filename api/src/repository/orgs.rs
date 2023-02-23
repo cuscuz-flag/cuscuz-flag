@@ -173,3 +173,30 @@ pub async fn get_org(pool: &PgPool, member_id: Uuid) -> Result<OrganizationInfo,
 
     Ok(org)
 }
+
+pub async fn update_org(
+    pool: &PgPool,
+    org_id: Uuid,
+    member_id: Uuid,
+    new_name: String,
+) -> Result<OrganizationInfo, AppError> {
+    sqlx::query!(
+        "select org_id from orgs.members where org_id = $1 and member_id = $2",
+        org_id,
+        member_id
+    )
+    .fetch_one(pool)
+    .await?;
+
+    let org = sqlx::query_as!(
+        OrganizationInfo,
+        "update orgs.organizations set name = $1, slug = $3, updated_at = now() where id = $2 returning id, name, slug;",
+        new_name,
+        org_id,
+        slug::slugify(new_name.clone())
+    )
+    .fetch_one(pool)
+    .await?;
+
+    Ok(org)
+}
