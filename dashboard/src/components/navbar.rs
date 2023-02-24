@@ -23,11 +23,11 @@ pub fn navbar_component() -> Html {
     };
 
     let auth_navbar_html = {
-      if user_ctx.is_authenticated() {
-        authenticated_routes_html()
-      } else {
-          html! {}
-      }
+        if user_ctx.is_authenticated() {
+            authenticated_routes_html()
+        } else {
+            html! {}
+        }
     };
 
     html! {
@@ -54,29 +54,29 @@ pub fn navbar_component() -> Html {
 }
 
 fn authenticated_routes_html() -> Html {
-  html! {
-    <div class="navbar-start">
-        <Link<Route> classes={classes!("navbar-item")} to={Route::Dashboard}>
-            { "Dashboard" }
-        </Link<Route>>
+    html! {
+      <div class="navbar-start">
+          <Link<Route> classes={classes!("navbar-item")} to={Route::Dashboard}>
+              { "Dashboard" }
+          </Link<Route>>
 
-        <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-                {"More"}
-            </a>
+          <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                  {"More"}
+              </a>
 
-            <div class="navbar-dropdown">
-                <Link<Route> classes={classes!("navbar-item")} to={Route::SetupOrg}>
-                    { "Organization Settings" }
-                </Link<Route>>
-                <hr class="navbar-divider" />
-                <a class="navbar-item" href="https://github.com/cuscuz-flag/cuscuz-flag/issues/new" target="_blank">
-                    {"Report an issue"}
-                </a>
-            </div>
-        </div>
-    </div>
-  }
+              <div class="navbar-dropdown">
+                  <Link<Route> classes={classes!("navbar-item")} to={Route::OrgSettings}>
+                      { "Organization Settings" }
+                  </Link<Route>>
+                  <hr class="navbar-divider" />
+                  <a class="navbar-item" href="https://github.com/cuscuz-flag/cuscuz-flag/issues/new" target="_blank">
+                      {"Report an issue"}
+                  </a>
+              </div>
+          </div>
+      </div>
+    }
 }
 
 fn login_html(userinfo: UserInfo, onclick_logout: Callback<MouseEvent>) -> Html {
@@ -87,7 +87,7 @@ fn login_html(userinfo: UserInfo, onclick_logout: Callback<MouseEvent>) -> Html 
                     <a class="button is-text">
                         <strong>{ &userinfo.email }</strong>
                     </a>
-                    <a class="button is-light" onclick={onclick_logout}>
+                    <a class="button is-warning" onclick={onclick_logout}>
                         {"Log out"}
                     </a>
                 </div>
@@ -104,7 +104,7 @@ fn logout_html() -> Html {
                     <Link<Route> classes={classes!("button", "is-primary")} to={Route::SignUp}>
                         <strong>{"Sign up"}</strong>
                     </Link<Route>>
-                    <Link<Route> classes={classes!("button", "is-light")} to={Route::SignIn}>
+                    <Link<Route> classes={classes!("button", "is-warning")} to={Route::SignIn}>
                         {"Sign in"}
                     </Link<Route>>
                 </div>
