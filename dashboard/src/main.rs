@@ -1,7 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
-use components::{header::Header, user_context_provider::UserContextProvider};
+use components::{navbar::Navbar, user_context_provider::UserContextProvider};
 use pages::{switch, Route};
 
 mod components;
@@ -16,7 +16,7 @@ fn app() -> Html {
     html! {
         <BrowserRouter>
             <UserContextProvider>
-                <Header />
+                <Navbar />
                 <Switch<Route> render={switch} />
             </UserContextProvider>
         </BrowserRouter>
