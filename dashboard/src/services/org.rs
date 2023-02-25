@@ -2,7 +2,7 @@ use super::{request_get, request_patch, request_post};
 use crate::error::Error;
 use crate::types::{
     CreateEnvironment, CreateFeatureFlag, CreateOrgForm, EnvironmentInfo, FeatureFlagInfo,
-    OrganizationInfo, UpdateOrganizationInfo, ToggleFeatureFlag,
+    OrganizationInfo, ToggleFeatureFlag, UpdateOrganizationInfo,
 };
 
 pub async fn get_org() -> Result<OrganizationInfo, Error> {
@@ -35,6 +35,13 @@ pub async fn update_org(request: UpdateOrganizationInfo) -> Result<OrganizationI
     request_patch::<UpdateOrganizationInfo, OrganizationInfo>("/orgs".to_string(), request).await
 }
 
-pub async fn toggle_flag(flag_id: String, request: ToggleFeatureFlag) -> Result<FeatureFlagInfo, Error> {
-    request_patch::<ToggleFeatureFlag, FeatureFlagInfo>(format!("/orgs/feature-flags/{flag_id}/toggle"), request).await
+pub async fn toggle_flag(
+    flag_id: String,
+    request: ToggleFeatureFlag,
+) -> Result<FeatureFlagInfo, Error> {
+    request_patch::<ToggleFeatureFlag, FeatureFlagInfo>(
+        format!("/orgs/feature-flags/{flag_id}/toggle"),
+        request,
+    )
+    .await
 }
