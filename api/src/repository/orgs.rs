@@ -101,7 +101,7 @@ pub async fn create_feature_flag(
 ) -> Result<FeatureFlag, AppError> {
     let ff = sqlx::query_as!(
         FeatureFlag,
-        "insert into orgs.feature_flags (name, public_name, description, value, env_id) values($1, $2, $3, $4, $5) returning id, env_id, name, public_name, description, value;",
+        "insert into orgs.feature_flags (name, public_name, description, value, env_id) values($1, $2, $3, $4, $5) returning id, env_id, name, public_name, description, value, active;",
         name,
         public_name,
         description,
@@ -141,7 +141,7 @@ pub async fn get_flags(
 
     let ffs = sqlx::query_as!(
         FeatureFlag,
-        "select id, env_id, name, public_name, description, value from orgs.feature_flags where env_id = $1",
+        "select id, env_id, name, public_name, description, value, active from orgs.feature_flags where env_id = $1",
         env_id
     )
     .fetch_all(pool)

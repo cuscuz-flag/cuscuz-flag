@@ -100,6 +100,7 @@ pub struct FeatureFlag {
     pub public_name: String,
     pub description: Option<String>,
     pub value: bool,
+    pub active: Option<bool>,
 }
 
 #[derive(Deserialize, Serialize, Validate)]
