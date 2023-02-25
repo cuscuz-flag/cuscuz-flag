@@ -77,4 +77,11 @@ pub struct FeatureFlagInfo {
     pub public_name: String,
     pub description: Option<String>,
     pub value: bool,
+    pub active: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, PartialEq, Clone, Debug, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct ToggleFeatureFlag {
+    pub value: bool,
 }

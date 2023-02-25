@@ -1,7 +1,13 @@
+use gloo::console::log;
 use yew::prelude::*;
 use yew_hooks::use_async;
 
-use crate::services::org::get_flags;
+use wasm_bindgen_futures::spawn_local;
+
+use crate::{
+    services::org::{get_flags, toggle_flag},
+    types::ToggleFeatureFlag,
+};
 
 #[derive(PartialEq, Properties)]
 pub struct Props {
@@ -31,16 +37,35 @@ pub fn flags_component(props: &Props) -> Html {
             <>
             {
             for flag_data.iter().map(|flag| {
+                let onclick = {
+                    let flag = flag.clone();
+                    Callback::from(move |_e: MouseEvent| {
+                        let flag = flag.clone();
+                        spawn_local(async move {
+                            if toggle_flag(flag.id.clone(), ToggleFeatureFlag { value: flag.active.unwrap() }).await.is_ok() {
+                                log!("sent toggle");
+                            }
+                        });
+                    })
+                };
+
                 html! {
                     <div class="columns">
                         <div class="column">{ &flag.name }</div>
                         <div class="column">
-                            // TODO: get the environment name? Maybe does not make sense
-                            <span class="tag">{ &flag.value }</span>
+                            <span class={classes!("tag", if flag.value { "is-success" } else { "is-danger" })}>
+                                { &flag.value }
+                            </span>
                         </div>
                         <div class="column">
-                            // TODO: change the color by disable action
-                            <button class="button is-light is-fullwidth is-danger">{ "Disable" }</button>
+                            <button
+                                {onclick}
+                                class={classes!(
+                                    "button", "is-light", "is-fullwidth",
+                                    if flag.active.unwrap() { "is-danger" } else { "is-success" }
+                                )}>
+                                    { if flag.active.unwrap() { "Disable" } else { "Active" } }
+                            </button>
                         </div>
                     </div>
                 }
