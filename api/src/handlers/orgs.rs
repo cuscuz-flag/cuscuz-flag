@@ -124,9 +124,7 @@ pub async fn toggle_feature_flag(
 
     request.toggle_value();
 
-    orgs::toggle_flag(&pool, flag_id, request.value.unwrap()).await?;
-
-    Ok(StatusCode::OK)
+    Ok((StatusCode::OK, Json(orgs::toggle_flag(&pool, flag_id, request.value.unwrap()).await?)))
 }
 
 pub async fn get_flags(
